@@ -1,49 +1,47 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_application_1/providers/user_places.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-void main() {
-  runApp(const MyApp());
-}
+//import 'package:flutter_application_1/model/catalogues.dart';
+import 'package:flutter_application_1/sceens/addcatalog.dart';
+import 'package:flutter_application_1/sceens/catalog_list.dart';
 
-class MyApp extends StatelessWidget {
-  const MyApp({super.key});
-
-  // This widget is the root of your application.
-  @override
-  Widget build(BuildContext context) {
-    return MaterialApp(
-      home: MyHomePage(title: 'Home'),
-    );
-  }
-}
-
-class MyHomePage extends StatefulWidget {
-  MyHomePage({super.key, required this.title});
-  final String title;
+class Home extends ConsumerStatefulWidget {
+  const Home({super.key});
 
   @override
-  State<MyHomePage> createState() => _MyHomePageState();
+  ConsumerState<Home> createState() => _HomeState();
 }
 
-class _MyHomePageState extends State<MyHomePage> {
+class _HomeState extends ConsumerState<Home> {
   final SearchController _searchController = SearchController();
+
   @override
   Widget build(BuildContext context) {
+    final userCatalogues = ref.watch(userCtataloguesProvider);
+
     return SafeArea(
       child: Scaffold(
         appBar: AppBar(
-          title: Text(widget.title),
+          title: const Text('home'),
           actions: [
             InkWell(
-              child: Row(
-                children: [Icon(Icons.qr_code_scanner), Text(' Scan')],
+              child: const Row(
+                children: [Icon(Icons.qr_code_scanner), Text(' สแกน Qrcode')],
               ),
               onTap: () {},
             ),
             InkWell(
-              child: Row(
-                children: [Icon(Icons.qr_code_scanner), Text(' Scan')],
+              child: const Row(
+                children: [
+                  Icon(Icons.qr_code_scanner),
+                  Text(' เพิ่มรายการใหม่')
+                ],
               ),
-              onTap: () {},
+              onTap: () {
+                Navigator.of(context).push(
+                    MaterialPageRoute(builder: (context) => Addcatalog()));
+              },
             ),
           ],
         ),
@@ -51,7 +49,7 @@ class _MyHomePageState extends State<MyHomePage> {
           child: ListView(
             padding: EdgeInsets.zero,
             children: <Widget>[
-              DrawerHeader(
+              const DrawerHeader(
                 decoration: BoxDecoration(
                   color: Colors.blue,
                 ),
@@ -64,41 +62,42 @@ class _MyHomePageState extends State<MyHomePage> {
                 ),
               ),
               ListTile(
-                leading: Icon(Icons.message),
-                title: Text('Messages'),
+                leading: const Icon(Icons.message),
+                title: const Text('Messages'),
                 onTap: () {},
               ),
               ListTile(
-                leading: Icon(Icons.account_circle),
-                title: Text('Profile'),
+                leading: const Icon(Icons.account_circle),
+                title: const Text('Profile'),
                 onTap: () {},
               ),
               ListTile(
-                leading: Icon(Icons.settings),
-                title: Text('Settings'),
+                leading: const Icon(Icons.settings),
+                title: const Text('Settings'),
                 onTap: () {},
               ),
             ],
           ),
         ),
         body: Padding(
-          padding: EdgeInsets.fromLTRB(15, 30, 15, 0),
+          padding: const EdgeInsets.fromLTRB(15, 30, 15, 0),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.center,
             children: [
+              //แถบค้นหาข้อมูล
               SearchAnchor.bar(
                 searchController: _searchController,
                 barLeading: const Icon(
                   Icons.search,
                   color: Colors.black54,
                 ),
-                barTextStyle:
-                    MaterialStateProperty.all(TextStyle(color: Colors.black54)),
+                barTextStyle: MaterialStateProperty.all(
+                    const TextStyle(color: Colors.black54)),
                 barHintText: 'ค้นหาข้อมูล',
                 isFullScreen: false,
                 dividerColor: Colors.black38,
-                viewSide: BorderSide(color: Colors.blue),
-                viewConstraints: BoxConstraints(maxHeight: 350),
+                viewSide: const BorderSide(color: Colors.blue),
+                viewConstraints: const BoxConstraints(maxHeight: 350),
                 suggestionsBuilder: (context, controller) {
                   final keyword = controller.value.text;
                   //ต้องมี Listจากการกรอกข้อมูล
@@ -116,7 +115,7 @@ class _MyHomePageState extends State<MyHomePage> {
                           child: ListTile(
                             title: Text(
                               item,
-                              style: TextStyle(color: Colors.black),
+                              style: const TextStyle(color: Colors.black),
                             ),
                             onTap: () {
                               controller.closeView(item);
@@ -127,31 +126,11 @@ class _MyHomePageState extends State<MyHomePage> {
                       );
                 },
               ),
+
               const SizedBox(
                 height: 20,
               ),
-              Expanded(
-                child: ListView.builder(
-                  itemBuilder: (BuildContext, index) {
-                    return ListTile(
-                      //leading: CircleAvatar(backgroundImage: AssetImage(images[index]),),
-                      title: Text("This is title"),
-                      subtitle: Text("This is subtitle"),
-                      trailing: Icon(Icons.arrow_forward_ios),
-                      tileColor: Colors.black54,
-                      contentPadding: EdgeInsets.all(10),
-                      shape: RoundedRectangleBorder(
-                          side:
-                              BorderSide(width: 1, color: Colors.orangeAccent),
-                          borderRadius: BorderRadius.circular(10)),
-                      onTap: () {},
-                    );
-                  },
-                  itemCount: 1,
-                  shrinkWrap: true,
-                  scrollDirection: Axis.vertical,
-                ),
-              ),
+              CataloguesList(catalogues: userCatalogues),
             ],
           ),
         ),
