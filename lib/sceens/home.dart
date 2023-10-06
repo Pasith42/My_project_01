@@ -126,11 +126,12 @@ class _HomeState extends ConsumerState<Home> {
                       );
                 },
               ),
-
               const SizedBox(
                 height: 20,
               ),
-              CataloguesList(catalogues: userCatalogues),
+              Padding(
+                  padding: const EdgeInsets.all(8.0),
+                  child: CataloguesList(catalogues: userCatalogues)),
             ],
           ),
         ),

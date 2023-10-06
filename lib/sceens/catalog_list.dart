@@ -27,10 +27,9 @@ class CataloguesList extends StatelessWidget {
       child: ListView.builder(
         itemBuilder: (context, index) {
           return ListTile(
-            leading: Container(
-              decoration:
-                  BoxDecoration(borderRadius: BorderRadius.circular(20)),
-              child: Image.asset(''),
+            leading: CircleAvatar(
+              radius: 26,
+              backgroundImage: FileImage(catalogues[index].image),
             ),
             title: Text(
               catalogues[index].name,

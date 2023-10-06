@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_application_1/model/catalogues.dart';
+import 'package:gallery_saver/gallery_saver.dart';
 
 class Detail extends StatelessWidget {
   const Detail({super.key, required this.catalogue});
@@ -11,14 +12,27 @@ class Detail extends StatelessWidget {
       appBar: AppBar(
         title: Text(catalogue.name),
       ),
-      body: Center(
-        child: Text(
-          catalogue.name,
-          style: Theme.of(context)
-              .textTheme
-              .bodyLarge!
-              .copyWith(color: Theme.of(context).colorScheme.onBackground),
-        ),
+      body: Stack(
+        children: [
+          Column(
+            children: [
+              Image.file(
+                catalogue.image,
+                fit: BoxFit.cover,
+                width: double.infinity,
+                height: 300,
+              ),
+              ElevatedButton(
+                  child: const Text('ดาวโหลดรูปภาพลงในแกลอรี่'),
+                  onPressed: () {
+                    //ถูกไหม
+                    GallerySaver.saveImage(catalogue.image.path);
+                    ScaffoldMessenger.of(context).showSnackBar(
+                        const SnackBar(content: Text('ดาวโหลดเสร็จสิ้น')));
+                  })
+            ],
+          ),
+        ],
       ),
     );
   }

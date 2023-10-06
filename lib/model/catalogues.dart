@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:uuid/uuid.dart';
 
 final uuid = Uuid();
@@ -8,7 +10,8 @@ class Catalogues {
       required this.number,
       required this.room,
       required this.startDate,
-      required this.checkDate})
+      required this.checkDate,
+      required this.image})
       : id = uuid.v4();
 
   //ไอดีของผู้ใช้
@@ -23,4 +26,6 @@ class Catalogues {
   final DateTime startDate;
   //กำหนดวันที่ตรวจสภาพ
   final DateTime checkDate;
+  //เก็บภาพที่ถ่ายรูปได้
+  final File image;
 }
