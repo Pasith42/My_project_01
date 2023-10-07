@@ -9,7 +9,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 final formatter = DateFormat.yMMMMEEEEd();
 
 class Addcatalog extends ConsumerStatefulWidget {
-  Addcatalog({super.key});
+  const Addcatalog({super.key});
 
   @override
   ConsumerState<Addcatalog> createState() => _AddcatalogState();
@@ -41,15 +41,15 @@ class _AddcatalogState extends ConsumerState<Addcatalog> {
       showDialog(
         context: context,
         builder: (context) => AlertDialog(
-          title: Text('ข้อผิดพลาดในการนำเข้าข้อมูลรายการ'),
-          content: Text(
+          title: const Text('ข้อผิดพลาดในการนำเข้าข้อมูลรายการ'),
+          content: const Text(
               'กรุณาตรวจสอบวันเดือนปี ชื่ออุปกรณ์ รหัสอุปกรณ์ และชื่อห้องด้วยครับ'),
           actions: [
             TextButton(
               onPressed: () {
                 Navigator.pop(context);
               },
-              child: Text('Okay'),
+              child: const Text('Okay'),
             )
           ],
         ),
@@ -68,7 +68,7 @@ class _AddcatalogState extends ConsumerState<Addcatalog> {
     Navigator.of(context).pop();
   }
 
-  void _presentDatePicker_start() async {
+  void _presentDatePickerStart() async {
     final now = DateTime.now();
     final firstDate = DateTime(
         now.year - 1 /*เลือกตัวเลข ย้อนหลังกี่ปีครับ*/, now.month, now.day);
@@ -83,7 +83,7 @@ class _AddcatalogState extends ConsumerState<Addcatalog> {
     });
   }
 
-  void _presentDatePicker_end() async {
+  void _presentDatePickerEnd() async {
     final now = DateTime.now();
     final firstDate = DateTime(
         now.year - 1 /*เลือกตัวเลข ย้อนหลังกี่ปีครับ*/, now.month, now.day);
@@ -98,6 +98,7 @@ class _AddcatalogState extends ConsumerState<Addcatalog> {
     });
   }
 
+//ตรวจสอบใช้งานหรือไม่ครับ
   @override
   void dispose() {
     _nameController.dispose();
@@ -135,7 +136,8 @@ class _AddcatalogState extends ConsumerState<Addcatalog> {
                   height: 16,
                 ),
                 TextField(
-                  decoration: const InputDecoration(labelText: 'ชื่ออุปกรณ์'),
+                  decoration:
+                      const InputDecoration(labelText: 'รหัสของอุปกรณ์'),
                   controller: _numberController,
                   keyboardType: TextInputType.number,
                   style: Theme.of(context).textTheme.titleMedium!.copyWith(
@@ -145,7 +147,7 @@ class _AddcatalogState extends ConsumerState<Addcatalog> {
                   height: 16,
                 ),
                 TextField(
-                  decoration: const InputDecoration(labelText: 'ชื่ออุปกรณ์'),
+                  decoration: const InputDecoration(labelText: 'ชื่อห้อง'),
                   controller: _roomController,
                   keyboardType: TextInputType.emailAddress,
                   style: Theme.of(context).textTheme.titleMedium!.copyWith(
@@ -157,7 +159,7 @@ class _AddcatalogState extends ConsumerState<Addcatalog> {
                 Row(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
-                    Text('วันที่เริ่มใช้งาน: '),
+                    const Text('วันที่เริ่มใช้งาน: '),
                     Text(
                       _selectedstartDate == null
                           ? 'ไม่มีข้อมูลวันเดือนปี'
@@ -166,12 +168,12 @@ class _AddcatalogState extends ConsumerState<Addcatalog> {
                           color: Theme.of(context).colorScheme.onBackground),
                     ),
                     IconButton(
-                        onPressed: _presentDatePicker_start,
-                        icon: Icon(Icons.calendar_month)),
+                        onPressed: _presentDatePickerStart,
+                        icon: const Icon(Icons.calendar_month)),
                     const SizedBox(
                       width: 30,
                     ),
-                    Text('วันที่ตรวจสอบสภาพ: '),
+                    const Text('วันที่ตรวจสอบสภาพ: '),
                     Text(
                       _selectedcheckDate == null
                           ? 'ไม่มีข้อมูลวันเดือนปี'
@@ -180,8 +182,8 @@ class _AddcatalogState extends ConsumerState<Addcatalog> {
                           color: Theme.of(context).colorScheme.onBackground),
                     ),
                     IconButton(
-                        onPressed: _presentDatePicker_end,
-                        icon: Icon(Icons.calendar_month)),
+                        onPressed: _presentDatePickerEnd,
+                        icon: const Icon(Icons.calendar_month)),
                   ],
                 ),
                 const SizedBox(
@@ -195,10 +197,18 @@ class _AddcatalogState extends ConsumerState<Addcatalog> {
                 const SizedBox(
                   height: 10,
                 ),
-                ElevatedButton.icon(
-                    onPressed: _saveCatalogue,
-                    icon: Icon(Icons.add),
-                    label: Text('Add Catalogue')),
+                Row(
+                  children: [
+                    ElevatedButton(
+                        onPressed: () => Navigator.of(context).pop(),
+                        child: const Text('ยกเลิก')),
+                    const SizedBox(
+                      width: 40,
+                    ),
+                    ElevatedButton(
+                        onPressed: _saveCatalogue, child: const Text('บันทึก')),
+                  ],
+                ),
               ],
             ),
           ),

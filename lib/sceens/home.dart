@@ -39,8 +39,8 @@ class _HomeState extends ConsumerState<Home> {
                 ],
               ),
               onTap: () {
-                Navigator.of(context).push(
-                    MaterialPageRoute(builder: (context) => Addcatalog()));
+                Navigator.of(context).push(MaterialPageRoute(
+                    builder: (context) => const Addcatalog()));
               },
             ),
           ],
