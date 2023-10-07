@@ -14,28 +14,26 @@ class Home extends ConsumerStatefulWidget {
 }
 
 class _HomeState extends ConsumerState<Home> {
-  final SearchController _searchController = SearchController();
-
   @override
   Widget build(BuildContext context) {
     final userCatalogues = ref.watch(userCtataloguesProvider);
+    final SearchController _searchController = SearchController();
 
     return SafeArea(
       child: Scaffold(
         appBar: AppBar(
           title: const Text('home'),
           actions: [
-            InkWell(
+            /*InkWell(
               child: const Row(
-                children: [Icon(Icons.qr_code_scanner), Text(' สแกน Qrcode')],
+                children: [Icon(Icons.qr_code_scanner)],
               ),
               onTap: () {},
             ),
             InkWell(
               child: const Row(
                 children: [
-                  Icon(Icons.qr_code_scanner),
-                  Text(' เพิ่มรายการใหม่')
+                  Icon(Icons.add_box_rounded)
                 ],
               ),
               onTap: () {
@@ -43,6 +41,18 @@ class _HomeState extends ConsumerState<Home> {
                     builder: (context) => const Addcatalog()));
               },
             ),
+            */
+            IconButton(
+              onPressed: () {},
+              icon: Icon(Icons.qr_code_scanner),
+            ),
+            IconButton(
+              icon: Icon(Icons.add_circle_outline),
+              onPressed: () {
+                Navigator.of(context).push(MaterialPageRoute(
+                    builder: (context) => const Addcatalog()));
+              },
+            )
           ],
         ),
         drawer: Drawer(
@@ -126,6 +136,7 @@ class _HomeState extends ConsumerState<Home> {
                       );
                 },
               ),
+
               const SizedBox(
                 height: 20,
               ),

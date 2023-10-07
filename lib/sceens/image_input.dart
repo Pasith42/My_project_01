@@ -98,7 +98,7 @@ class _ImageInputState extends State<ImageInput> {
         onTap: () async {
           final source = await showImageSource(context);
 
-          //ทำงานได้ไหมครับ
+          //ทำงานไม่ได้ครับ
           _takePicture(source!);
         },
         child: Image.file(

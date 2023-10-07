@@ -1,6 +1,7 @@
 import 'dart:io';
 
 import 'package:flutter/material.dart';
+import 'package:flutter_application_1/sceens/complete.dart';
 import 'package:flutter_application_1/sceens/image_input.dart';
 import 'package:intl/intl.dart';
 import 'package:flutter_application_1/providers/user_places.dart';
@@ -26,8 +27,8 @@ class _AddcatalogState extends ConsumerState<Addcatalog> {
   void _saveCatalogue() {
     final enterName = _nameController.text;
     //เพราะว่าเรากำหนดพิมพ์ข้อความตัวเลขอย่างเดียว ไม่จำเป็นมีตัวอักษร
-    final enterNumber = int.tryParse(_nameController.text);
-    final enterRoom = _nameController.text;
+    final enterNumber = int.tryParse(_numberController.text);
+    final enterRoom = _roomController.text;
     final enterStartDate = _selectedstartDate;
     final enterChecktDate = _selectedcheckDate;
 
@@ -36,8 +37,8 @@ class _AddcatalogState extends ConsumerState<Addcatalog> {
     if (enterName.isEmpty ||
         amountIsInvalid ||
         enterRoom.isEmpty ||
-        _selectedstartDate == null ||
-        _selectedcheckDate == null) {
+        enterStartDate == null ||
+        enterChecktDate == null) {
       showDialog(
         context: context,
         builder: (context) => AlertDialog(
@@ -61,11 +62,23 @@ class _AddcatalogState extends ConsumerState<Addcatalog> {
         enterName,
         enterNumber,
         enterRoom,
-        enterStartDate!,
-        enterChecktDate!,
+        enterStartDate,
+        enterChecktDate,
         _selectedImage!);
 
     Navigator.of(context).pop();
+
+    showModalBottomSheet(
+      context: context,
+      builder: (context) {
+        return Container(
+            height: 50,
+            child: const Padding(
+              padding: EdgeInsets.all(15.0),
+              child: Text('เพิ่มรายการเสร็จสมบูรณ์'),
+            ));
+      },
+    );
   }
 
   void _presentDatePickerStart() async {
@@ -112,13 +125,14 @@ class _AddcatalogState extends ConsumerState<Addcatalog> {
     return SafeArea(
       child: Scaffold(
         appBar: AppBar(
-          title: Text(
-            'เพิ่มรายการใหม่',
-            style: Theme.of(context)
+          title: Text('เพิ่มรายการใหม่', style: TextStyle(color: Colors.black)
+              /*
+            Theme.of(context)
                 .textTheme
                 .bodyMedium!
                 .copyWith(color: Theme.of(context).colorScheme.onBackground),
-          ),
+                */
+              ),
         ),
         body: SingleChildScrollView(
           child: Padding(
@@ -126,33 +140,37 @@ class _AddcatalogState extends ConsumerState<Addcatalog> {
             child: Column(
               children: [
                 TextField(
-                  decoration: const InputDecoration(labelText: 'ชื่ออุปกรณ์'),
-                  keyboardType: TextInputType.emailAddress,
-                  controller: _nameController,
-                  style: Theme.of(context).textTheme.titleMedium!.copyWith(
+                    decoration: const InputDecoration(labelText: 'ชื่ออุปกรณ์'),
+                    keyboardType: TextInputType.emailAddress,
+                    controller: _nameController,
+                    style: TextStyle(color: Colors.black)
+                    /*Theme.of(context).textTheme.titleMedium!.copyWith(
                       color: Theme.of(context).colorScheme.onBackground),
-                ),
+                      */
+                    ),
                 const SizedBox(
                   height: 16,
                 ),
                 TextField(
-                  decoration:
-                      const InputDecoration(labelText: 'รหัสของอุปกรณ์'),
-                  controller: _numberController,
-                  keyboardType: TextInputType.number,
-                  style: Theme.of(context).textTheme.titleMedium!.copyWith(
-                      color: Theme.of(context).colorScheme.onBackground),
-                ),
+                    decoration:
+                        const InputDecoration(labelText: 'รหัสของอุปกรณ์'),
+                    controller: _numberController,
+                    keyboardType: TextInputType.number,
+                    style: TextStyle(color: Colors.black)
+                    /*Theme.of(context).textTheme.titleMedium!.copyWith(
+                      color: Theme.of(context).colorScheme.onBackground),*/
+                    ),
                 const SizedBox(
                   height: 16,
                 ),
                 TextField(
-                  decoration: const InputDecoration(labelText: 'ชื่อห้อง'),
-                  controller: _roomController,
-                  keyboardType: TextInputType.emailAddress,
-                  style: Theme.of(context).textTheme.titleMedium!.copyWith(
-                      color: Theme.of(context).colorScheme.onBackground),
-                ),
+                    decoration: const InputDecoration(labelText: 'ชื่อห้อง'),
+                    controller: _roomController,
+                    keyboardType: TextInputType.emailAddress,
+                    style: TextStyle(color: Colors.black)
+                    /*Theme.of(context).textTheme.titleMedium!.copyWith(
+                      color: Theme.of(context).colorScheme.onBackground),*/
+                    ),
                 const SizedBox(
                   height: 16,
                 ),
@@ -161,26 +179,30 @@ class _AddcatalogState extends ConsumerState<Addcatalog> {
                   children: [
                     const Text('วันที่เริ่มใช้งาน: '),
                     Text(
-                      _selectedstartDate == null
-                          ? 'ไม่มีข้อมูลวันเดือนปี'
-                          : formatter.format(_selectedstartDate!),
-                      style: Theme.of(context).textTheme.titleMedium!.copyWith(
-                          color: Theme.of(context).colorScheme.onBackground),
-                    ),
+                        _selectedstartDate == null
+                            ? 'ไม่มีข้อมูลวันเดือนปี'
+                            : formatter.format(_selectedstartDate!),
+                        style: TextStyle(color: Colors.black)
+                        /*Theme.of(context).textTheme.titleMedium!.copyWith(
+                          color: Theme.of(context).colorScheme.onBackground),*/
+                        ),
                     IconButton(
                         onPressed: _presentDatePickerStart,
                         icon: const Icon(Icons.calendar_month)),
-                    const SizedBox(
-                      width: 30,
-                    ),
+                  ],
+                ),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
                     const Text('วันที่ตรวจสอบสภาพ: '),
                     Text(
-                      _selectedcheckDate == null
-                          ? 'ไม่มีข้อมูลวันเดือนปี'
-                          : formatter.format(_selectedcheckDate!),
-                      style: Theme.of(context).textTheme.titleMedium!.copyWith(
-                          color: Theme.of(context).colorScheme.onBackground),
-                    ),
+                        _selectedcheckDate == null
+                            ? 'ไม่มีข้อมูลวันเดือนปี'
+                            : formatter.format(_selectedcheckDate!),
+                        style: TextStyle(color: Colors.black)
+                        /*Theme.of(context).textTheme.titleMedium!.copyWith(
+                          color: Theme.of(context).colorScheme.onBackground),*/
+                        ),
                     IconButton(
                         onPressed: _presentDatePickerEnd,
                         icon: const Icon(Icons.calendar_month)),
