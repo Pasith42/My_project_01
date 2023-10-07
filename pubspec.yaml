@@ -38,7 +38,6 @@ dependencies:
   gallery_saver: ^2.3.2
   image_picker: ^1.0.4
   permission_handler: ^11.0.0
-  qrscan: ^0.3.3
   path_provider: ^2.1.1
   uuid: ^4.1.0
   flutter_riverpod: ^2.4.2
