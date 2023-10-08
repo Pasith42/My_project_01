@@ -22,11 +22,7 @@ class Complete extends StatelessWidget {
             ),
             ElevatedButton(
                 onPressed: () {
-                  Navigator.of(context).push(
-                    MaterialPageRoute(
-                      builder: (context) => const Home(),
-                    ),
-                  );
+                  Navigator.of(context).pop();
                 },
                 child: const Text('OK'))
           ],

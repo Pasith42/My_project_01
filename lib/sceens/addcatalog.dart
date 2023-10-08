@@ -48,7 +48,11 @@ class _AddcatalogState extends ConsumerState<Addcatalog> {
           actions: [
             TextButton(
               onPressed: () {
-                Navigator.pop(context);
+                Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => const Complete(),
+                    ));
               },
               child: const Text('Okay'),
             )
@@ -125,7 +129,8 @@ class _AddcatalogState extends ConsumerState<Addcatalog> {
     return SafeArea(
       child: Scaffold(
         appBar: AppBar(
-          title: Text('เพิ่มรายการใหม่', style: TextStyle(color: Colors.black)
+          title: const Text('เพิ่มรายการใหม่',
+              style: TextStyle(color: Colors.black)
               /*
             Theme.of(context)
                 .textTheme
@@ -143,7 +148,7 @@ class _AddcatalogState extends ConsumerState<Addcatalog> {
                     decoration: const InputDecoration(labelText: 'ชื่ออุปกรณ์'),
                     keyboardType: TextInputType.emailAddress,
                     controller: _nameController,
-                    style: TextStyle(color: Colors.black)
+                    style: const TextStyle(color: Colors.black)
                     /*Theme.of(context).textTheme.titleMedium!.copyWith(
                       color: Theme.of(context).colorScheme.onBackground),
                       */
@@ -156,7 +161,7 @@ class _AddcatalogState extends ConsumerState<Addcatalog> {
                         const InputDecoration(labelText: 'รหัสของอุปกรณ์'),
                     controller: _numberController,
                     keyboardType: TextInputType.number,
-                    style: TextStyle(color: Colors.black)
+                    style: const TextStyle(color: Colors.black)
                     /*Theme.of(context).textTheme.titleMedium!.copyWith(
                       color: Theme.of(context).colorScheme.onBackground),*/
                     ),
@@ -167,7 +172,7 @@ class _AddcatalogState extends ConsumerState<Addcatalog> {
                     decoration: const InputDecoration(labelText: 'ชื่อห้อง'),
                     controller: _roomController,
                     keyboardType: TextInputType.emailAddress,
-                    style: TextStyle(color: Colors.black)
+                    style: const TextStyle(color: Colors.black)
                     /*Theme.of(context).textTheme.titleMedium!.copyWith(
                       color: Theme.of(context).colorScheme.onBackground),*/
                     ),
@@ -182,7 +187,7 @@ class _AddcatalogState extends ConsumerState<Addcatalog> {
                         _selectedstartDate == null
                             ? 'ไม่มีข้อมูลวันเดือนปี'
                             : formatter.format(_selectedstartDate!),
-                        style: TextStyle(color: Colors.black)
+                        style: const TextStyle(color: Colors.black)
                         /*Theme.of(context).textTheme.titleMedium!.copyWith(
                           color: Theme.of(context).colorScheme.onBackground),*/
                         ),
@@ -199,7 +204,7 @@ class _AddcatalogState extends ConsumerState<Addcatalog> {
                         _selectedcheckDate == null
                             ? 'ไม่มีข้อมูลวันเดือนปี'
                             : formatter.format(_selectedcheckDate!),
-                        style: TextStyle(color: Colors.black)
+                        style: const TextStyle(color: Colors.black)
                         /*Theme.of(context).textTheme.titleMedium!.copyWith(
                           color: Theme.of(context).colorScheme.onBackground),*/
                         ),

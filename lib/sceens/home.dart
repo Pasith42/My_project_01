@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_application_1/providers/user_places.dart';
+import 'package:flutter_application_1/qrCode/qr_screen.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 //import 'package:flutter_application_1/model/catalogues.dart';
@@ -17,7 +18,7 @@ class _HomeState extends ConsumerState<Home> {
   @override
   Widget build(BuildContext context) {
     final userCatalogues = ref.watch(userCtataloguesProvider);
-    final SearchController _searchController = SearchController();
+    final SearchController searchController = SearchController();
 
     return SafeArea(
       child: Scaffold(
@@ -43,11 +44,14 @@ class _HomeState extends ConsumerState<Home> {
             ),
             */
             IconButton(
-              onPressed: () {},
-              icon: Icon(Icons.qr_code_scanner),
+              onPressed: () {
+                Navigator.of(context).push(
+                    MaterialPageRoute(builder: (context) => const QRScreen()));
+              },
+              icon: const Icon(Icons.qr_code_scanner),
             ),
             IconButton(
-              icon: Icon(Icons.add_circle_outline),
+              icon: const Icon(Icons.add_circle_outline),
               onPressed: () {
                 Navigator.of(context).push(MaterialPageRoute(
                     builder: (context) => const Addcatalog()));
@@ -96,7 +100,7 @@ class _HomeState extends ConsumerState<Home> {
             children: [
               //แถบค้นหาข้อมูล
               SearchAnchor.bar(
-                searchController: _searchController,
+                searchController: searchController,
                 barLeading: const Icon(
                   Icons.search,
                   color: Colors.black54,

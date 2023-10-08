@@ -25,7 +25,6 @@ class Detail extends StatelessWidget {
               ElevatedButton(
                   child: const Text('ดาวโหลดรูปภาพลงในแกลอรี่'),
                   onPressed: () {
-                    //ถูกไหม
                     GallerySaver.saveImage(catalogue.image.path);
                     ScaffoldMessenger.of(context).showSnackBar(
                         const SnackBar(content: Text('ดาวโหลดเสร็จสิ้น')));
