@@ -24,6 +24,7 @@ class _QRScannerState extends State<QRScanner> {
   final GlobalKey _qrkey = GlobalKey();
   bool _flashOn = false;
   bool _frontCam = false;
+  Barcode? barcode;
 
   @override
   void dispose() {
@@ -32,49 +33,46 @@ class _QRScannerState extends State<QRScanner> {
   }
 
   @override
+  void reassemble() async {
+    super.reassemble();
+    if (Platform.isAndroid) {
+      await _controller!.pauseCamera();
+    }
+    _controller!.resumeCamera();
+  }
+
+  @override
   Widget build(BuildContext context) {
     return Stack(
       children: [
-        QRView(
-            key: _qrkey,
-            overlay: QrScannerOverlayShape(
-                borderColor: Colors.white,
-                borderLength: 15.0,
-                borderWidth: 5.0,
-                borderRadius: 2.0),
-            onQRViewCreated: (QRViewController controller) {
-              _controller = controller;
-              controller.scannedDataStream.listen((value) {
-                //เราต้องสร้างฟังก์ชั่นที่ใช้value เพื่อส่งไปถึงหน้า detail
-                //แสดงข้อมูลผลลัพธ์จากการแสดงคิวบาร์โค้ด
-                if (mounted) {
-                  Fluttertoast.showToast(
-                      msg: value.toString(),
-                      toastLength: Toast.LENGTH_SHORT,
-                      gravity: ToastGravity.BOTTOM,
-                      timeInSecForIosWeb: 2,
-                      backgroundColor: Colors.green,
-                      textColor: Colors.white,
-                      fontSize: 16);
-                }
-                Navigator.of(context).pop();
-                //ส่งข้อมูลต่อไป
-              });
-            }),
         Align(
           alignment: Alignment.topCenter,
-          child: Container(
-            margin: const EdgeInsets.only(top: 60.0),
-            child: const Text(
-              'วางคิวอาร์โค้ดให้อยู่ในกรอบเพื่อสแกน',
-              style: TextStyle(fontSize: 14, color: Colors.white),
-            ),
-          ),
+          child: QRView(
+              key: _qrkey,
+              overlay: QrScannerOverlayShape(
+                  cutOutSize: MediaQuery.of(context).size.width * 0.8,
+                  borderWidth: 10,
+                  borderRadius: 10,
+                  borderLength: 20,
+                  borderColor: Colors.white),
+              onQRViewCreated: (QRViewController controller) {
+                _controller = controller;
+                controller.scannedDataStream.listen((value) {
+                  //เราต้องสร้างฟังก์ชั่นที่ใช้value เพื่อส่งไปถึงหน้า detail
+                  //แสดงข้อมูลผลลัพธ์จากการแสดงคิวบาร์โค้ด
+                  setState(() {
+                    barcode = value;
+                  });
+
+                  Navigator.of(context).pop();
+                  //ส่งข้อมูลต่อไป
+                });
+              }),
         ),
         Align(
           alignment: Alignment.bottomCenter,
           child: Container(
-            margin: const EdgeInsets.only(bottom: 80.0),
+            margin: const EdgeInsets.only(bottom: 130.0),
             child: OutlinedButton(
               onPressed: () async {
                 try {
@@ -120,6 +118,21 @@ class _QRScannerState extends State<QRScanner> {
                 'นำเข้าจากแกลอรี่',
                 style: TextStyle(color: Colors.white, fontSize: 16),
               ),
+            ),
+          ),
+        ),
+        Positioned(
+          bottom: 80,
+          left: 150,
+          child: Container(
+            padding: EdgeInsets.all(12),
+            decoration: BoxDecoration(
+              borderRadius: BorderRadius.circular(8),
+              color: Colors.white24,
+            ),
+            child: Text(
+              barcode != null ? 'Result : $barcode' : 'Scan a code!',
+              maxLines: 3,
             ),
           ),
         ),
