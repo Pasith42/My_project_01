@@ -1,7 +1,6 @@
 import 'dart:io';
 
 import 'package:flutter/material.dart';
-import 'package:flutter_application_1/sceens/complete.dart';
 import 'package:flutter_application_1/sceens/image_input.dart';
 import 'package:intl/intl.dart';
 import 'package:flutter_application_1/providers/user_places.dart';
@@ -48,11 +47,7 @@ class _AddcatalogState extends ConsumerState<Addcatalog> {
           actions: [
             TextButton(
               onPressed: () {
-                Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                      builder: (context) => const Complete(),
-                    ));
+                Navigator.of(context).pop();
               },
               child: const Text('Okay'),
             )

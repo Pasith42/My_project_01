@@ -1,9 +1,12 @@
 import 'package:flutter/material.dart';
+//import 'package:flutter_application_1/data/catalogues_data.dart';
+import 'package:flutter_application_1/model/catalogues.dart';
 import 'package:flutter_application_1/qrCode/create_qrcode.dart';
 import 'package:flutter_application_1/qrCode/qr_scanner.dart';
 
 class QRScreen extends StatefulWidget {
-  const QRScreen({super.key});
+  const QRScreen({super.key, required this.catalogues});
+  final List<Catalogues> catalogues;
 
   @override
   State<QRScreen> createState() {
@@ -32,9 +35,9 @@ class _QRScreenState extends State<QRScreen>
         ),
         body: TabBarView(
           controller: controller,
-          children: const [
-            QRScanner(),
-            CreateQrcode(),
+          children: [
+            QRScanner(catalogues: widget.catalogues),
+            const CreateQrcode(),
           ],
         ));
   }

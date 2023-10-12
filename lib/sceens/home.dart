@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_application_1/model/catalogues.dart';
 import 'package:flutter_application_1/providers/user_places.dart';
 import 'package:flutter_application_1/qrCode/qr_screen.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -15,10 +16,32 @@ class Home extends ConsumerStatefulWidget {
 }
 
 class _HomeState extends ConsumerState<Home> {
+  List<Catalogues> items = [];
+  SearchController searchController = SearchController();
+
+  /*@override
+  void dispose() {
+    searchController.dispose();
+    super.dispose();
+  }*/
+
+  Iterable<Catalogues> searchCatalogues(
+      String query, List<Catalogues> catalogues) {
+    final suggestions =
+        List.generate(catalogues.length, (index) => catalogues[index])
+            .where((element) {
+      final titleLower = element.name.toLowerCase();
+      final authorLower = element.room.toLowerCase();
+      final searchLower = query.toLowerCase();
+      return titleLower.startsWith(searchLower) ||
+          authorLower.startsWith(searchLower);
+    });
+    return suggestions;
+  }
+
   @override
   Widget build(BuildContext context) {
     final userCatalogues = ref.watch(userCtataloguesProvider);
-    final SearchController searchController = SearchController();
 
     return SafeArea(
       child: Scaffold(
@@ -45,14 +68,16 @@ class _HomeState extends ConsumerState<Home> {
             */
             IconButton(
               onPressed: () {
-                Navigator.of(context).push(
-                    MaterialPageRoute(builder: (context) => const QRScreen()));
+                Navigator.of(context).push(MaterialPageRoute(
+                    builder: (context) =>
+                        QRScreen(catalogues: userCatalogues)));
               },
               icon: const Icon(Icons.qr_code_scanner),
             ),
             IconButton(
               icon: const Icon(Icons.add_circle_outline),
               onPressed: () {
+                //ใช้งานหรือเปล่า
                 Navigator.of(context).push(MaterialPageRoute(
                     builder: (context) => const Addcatalog()));
               },
@@ -93,61 +118,98 @@ class _HomeState extends ConsumerState<Home> {
             ],
           ),
         ),
-        body: Padding(
-          padding: const EdgeInsets.fromLTRB(15, 30, 15, 0),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.center,
-            children: [
-              //แถบค้นหาข้อมูล
-              SearchAnchor.bar(
-                searchController: searchController,
-                barLeading: const Icon(
-                  Icons.search,
-                  color: Colors.black54,
-                ),
-                barTextStyle: MaterialStateProperty.all(
-                    const TextStyle(color: Colors.black54)),
-                barHintText: 'ค้นหาข้อมูล',
-                isFullScreen: false,
-                dividerColor: Colors.black38,
-                viewSide: const BorderSide(color: Colors.blue),
-                viewConstraints: const BoxConstraints(maxHeight: 350),
-                suggestionsBuilder: (context, controller) {
-                  final keyword = controller.value.text;
-                  //ต้องมี Listจากการกรอกข้อมูล
-                  return List.generate(5, (index) => 'Item $index')
-                      .where((element) => element
-                          .toLowerCase()
-                          .startsWith(keyword.toLowerCase()))
-                      .map(
-                        (item) => GestureDetector(
-                          onTap: () {
-                            setState(() {
-                              controller.closeView(item);
-                            });
-                          },
-                          child: ListTile(
-                            title: Text(
-                              item,
-                              style: const TextStyle(color: Colors.black),
-                            ),
-                            onTap: () {
-                              controller.closeView(item);
-                              FocusScope.of(context).unfocus();
-                            },
-                          ),
-                        ),
-                      );
-                },
-              ),
+        body: Center(
+          child: Padding(
+            padding: const EdgeInsets.fromLTRB(15, 30, 15, 0),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.center,
+              children: [
+                //แก้ไขอยู่ครับ
 
-              const SizedBox(
-                height: 20,
-              ),
-              Padding(
-                  padding: const EdgeInsets.all(8.0),
-                  child: CataloguesList(catalogues: userCatalogues)),
-            ],
+                SearchAnchor.bar(
+                  searchController: searchController,
+                  barLeading: const Icon(
+                    Icons.search,
+                    color: Colors.black54,
+                  ),
+                  barTrailing: [
+                    IconButton(
+                        onPressed: () {
+                          searchController.clear();
+                        },
+                        icon: const Icon(Icons.clear))
+                  ],
+                  viewTrailing: [
+                    IconButton(
+                        onPressed: () {
+                          searchController.closeView(searchController.text);
+                          List<Catalogues> item = searchCatalogues(
+                                  searchController.text, userCatalogues)
+                              .toList();
+                          setState(() {
+                            items.clear();
+                            items.addAll(item);
+                          });
+                        },
+                        icon: const Icon(Icons.search)),
+                    IconButton(
+                        onPressed: () {
+                          searchController.clear();
+                        },
+                        icon: const Icon(Icons.clear)),
+                  ],
+                  barTextStyle: MaterialStateProperty.all(
+                      const TextStyle(color: Colors.black54)),
+                  barHintText: 'ค้นหาข้อมูลชื่อของอุปกรณ์',
+                  isFullScreen: false,
+                  dividerColor: Colors.black38,
+                  viewSide: const BorderSide(color: Colors.blue),
+                  viewConstraints: const BoxConstraints(maxHeight: 350),
+                  suggestionsBuilder: (context, controller) {
+                    final keyword = controller.value.text;
+                    //ต้องมี Listจากการกรอกข้อมูล
+                    return searchCatalogues(keyword, userCatalogues).map(
+                      (item) => ListTile(
+                        leading: Image.file(
+                          item.image,
+                          fit: BoxFit.cover,
+                          width: 50,
+                          height: 50,
+                        ),
+                        title: Text(item.name),
+                        subtitle: Column(
+                          children: [
+                            Text(item.room),
+                            Text('${item.checkDate}')
+                          ],
+                        ),
+                        onTap: () {
+                          controller.closeView(keyword);
+                          FocusScope.of(context).unfocus();
+                          //ใช้งานหรือเปล่า
+                          setState(() {
+                            items.clear();
+                            items.add(item);
+                          });
+                        },
+                      ),
+                    );
+                  },
+                ),
+
+                const SizedBox(
+                  height: 20,
+                ),
+                Expanded(
+                  child: Padding(
+                      padding: const EdgeInsets.all(8.0),
+                      child: CataloguesList(
+                        items: items,
+                        catalogues: userCatalogues,
+                      )),
+                ),
+              ],
+            ),
           ),
         ),
       ),

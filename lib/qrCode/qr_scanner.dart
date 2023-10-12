@@ -2,13 +2,16 @@ import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_application_1/model/catalogues.dart';
+import 'package:flutter_application_1/sceens/detail.dart';
 import 'package:qr_code_scanner/qr_code_scanner.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:scan/scan.dart';
 
 class QRScanner extends StatefulWidget {
-  const QRScanner({super.key});
+  const QRScanner({super.key, required this.catalogues});
+  final List<Catalogues> catalogues;
 
   @override
   State<QRScanner> createState() {
@@ -25,6 +28,7 @@ class _QRScannerState extends State<QRScanner> {
   bool _flashOn = false;
   bool _frontCam = false;
   Barcode? barcode;
+  String? resultQrcode;
 
   @override
   void dispose() {
@@ -47,6 +51,7 @@ class _QRScannerState extends State<QRScanner> {
       children: [
         Align(
           alignment: Alignment.topCenter,
+          //Qrcode scanner Ok
           child: QRView(
               key: _qrkey,
               overlay: QrScannerOverlayShape(
@@ -62,13 +67,15 @@ class _QRScannerState extends State<QRScanner> {
                   //แสดงข้อมูลผลลัพธ์จากการแสดงคิวบาร์โค้ด
                   setState(() {
                     barcode = value;
+                    resultQrcode = barcode!.code;
                   });
 
-                  Navigator.of(context).pop();
+                  //Navigator.of(context).pop();
                   //ส่งข้อมูลต่อไป
                 });
               }),
         ),
+        //Ok
         Align(
           alignment: Alignment.bottomCenter,
           child: Container(
@@ -85,12 +92,11 @@ class _QRScannerState extends State<QRScanner> {
                   }
                   //ใช้ฟังก์ชั่น package scan
                   String? result = await Scan.parse(pickedImage.path);
-
                   //final imageTemporary = File(pickedImage.path);
 
-                  //setState(() {
-                  //  _selectedImage = imageTemporary;
-                  //});
+                  setState(() {
+                    resultQrcode = result;
+                  });
 
                   //result ถูกนำไปส่งข้อมูลที่ไหน Detail
                   //แสดงข้อมูลผลลัพธ์จากการแสดงคิวบาร์โค้ด
@@ -101,7 +107,7 @@ class _QRScannerState extends State<QRScanner> {
                         gravity: ToastGravity.BOTTOM,
                         timeInSecForIosWeb: 2,
                         backgroundColor: Colors.green,
-                        textColor: Colors.white,
+                        textColor: const Color.fromARGB(255, 49, 12, 12),
                         fontSize: 16);
                   }
                 } on PlatformException catch (e) {
@@ -123,16 +129,49 @@ class _QRScannerState extends State<QRScanner> {
         ),
         Positioned(
           bottom: 80,
-          left: 150,
+          left: 100,
           child: Container(
-            padding: EdgeInsets.all(12),
+            padding: const EdgeInsets.all(8),
             decoration: BoxDecoration(
               borderRadius: BorderRadius.circular(8),
               color: Colors.white24,
             ),
-            child: Text(
-              barcode != null ? 'Result : $barcode' : 'Scan a code!',
-              maxLines: 3,
+            child: Row(
+              children: [
+                Text(
+                  resultQrcode != null
+                      ? 'Result: $resultQrcode'
+                      : 'Scan a code!',
+                  maxLines: 3,
+                ),
+                IconButton(
+                  icon: const Icon(Icons.arrow_forward_sharp),
+                  onPressed: () {
+                    final catalogue = List.generate(widget.catalogues.length,
+                        (index) => widget.catalogues[index]).where((element) {
+                      final titleLower = element.name.toLowerCase();
+                      final searchLower = resultQrcode?.toLowerCase();
+                      return titleLower.startsWith(searchLower!) &&
+                          titleLower.endsWith(searchLower);
+                    }).toList();
+                    if (catalogue.length == 1) {
+                      Navigator.of(context).push(MaterialPageRoute(
+                          builder: (context) =>
+                              Detail(catalogue: catalogue[0])));
+                    } else {
+                      AlertDialog(
+                        title: const Text(
+                          'ข้อผิดพลาด',
+                          style: TextStyle(fontSize: 18),
+                        ),
+                        content: catalogue.isEmpty
+                            ? const Text('ไม่พบข้อมูลในรายการ')
+                            : Text('พบข้อมูลรายการจำนวน ${catalogue.length}'),
+                      );
+                    }
+                  },
+                )
+              ],
             ),
           ),
         ),

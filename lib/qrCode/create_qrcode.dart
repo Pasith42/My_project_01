@@ -80,7 +80,11 @@ class _QRScannerState extends State<CreateQrcode> {
                     style: BorderStyle.solid, color: Colors.blue, width: 1),
                 shape: const StadiumBorder(),
               ),
-              child: const Text('สร้าง QRcode'),
+              child: const Text(
+                'สร้าง QRcode',
+                style:
+                    TextStyle(color: Colors.black, fontWeight: FontWeight.bold),
+              ),
             ),
             const SizedBox(
               height: 20,

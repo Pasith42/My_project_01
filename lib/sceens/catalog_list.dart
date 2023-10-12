@@ -3,8 +3,13 @@ import 'package:flutter_application_1/model/catalogues.dart';
 import 'package:flutter_application_1/sceens/detail.dart';
 
 class CataloguesList extends StatelessWidget {
-  const CataloguesList({super.key, required this.catalogues});
+  const CataloguesList({
+    super.key,
+    required this.items,
+    required this.catalogues,
+  });
   final List<Catalogues> catalogues;
+  final List<Catalogues> items;
 
   @override
   Widget build(BuildContext context) {
@@ -24,23 +29,31 @@ class CataloguesList extends StatelessWidget {
     }
 
     return ListView.builder(
+      itemCount: items.isEmpty ? catalogues.length : items.length,
+      shrinkWrap: true,
+      scrollDirection: Axis.vertical,
       itemBuilder: (context, index) {
+        final item = items.isEmpty ? catalogues[index] : items[index];
+
         return ListTile(
-          leading: CircleAvatar(
-            radius: 26,
-            backgroundImage: FileImage(catalogues[index].image),
+          leading: Image.file(
+            item.image,
+            fit: BoxFit.fill,
+            width: 50,
+            height: 50,
           ),
+          //CircleAvatar(radius: 26,backgroundImage: FileImage(catalogues[index].image),),
           title: Text(
-            catalogues[index].name,
+            item.name,
             style: Theme.of(context)
                 .textTheme
                 .titleMedium!
                 .copyWith(color: Theme.of(context).colorScheme.onBackground),
           ),
-          subtitle: const Column(
+          subtitle: Column(
             children: [
-              Text("This is subtitle"),
-              Text("This is subtitle 2"),
+              Text(item.number.toString()),
+              Text(item.checkDate.toString()),
             ],
           ),
           trailing: const Icon(Icons.arrow_forward_sharp),
@@ -56,9 +69,6 @@ class CataloguesList extends StatelessWidget {
           },
         );
       },
-      itemCount: catalogues.length,
-      shrinkWrap: true,
-      scrollDirection: Axis.vertical,
     );
   }
 }
