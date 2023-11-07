@@ -69,6 +69,16 @@ class _QRScannerState extends State<QRScanner> {
                     barcode = value;
                     resultQrcode = barcode!.code;
                   });
+                  if (mounted) {
+                    Fluttertoast.showToast(
+                        msg: resultQrcode!,
+                        toastLength: Toast.LENGTH_SHORT,
+                        gravity: ToastGravity.BOTTOM,
+                        timeInSecForIosWeb: 2,
+                        backgroundColor: Colors.green,
+                        textColor: const Color.fromARGB(255, 49, 12, 12),
+                        fontSize: 16);
+                  }
 
                   //Navigator.of(context).pop();
                   //ส่งข้อมูลต่อไป
@@ -128,7 +138,7 @@ class _QRScannerState extends State<QRScanner> {
           ),
         ),
         Positioned(
-          bottom: 80,
+          bottom: 70,
           left: 100,
           child: Container(
             padding: const EdgeInsets.all(8),
@@ -149,24 +159,41 @@ class _QRScannerState extends State<QRScanner> {
                   onPressed: () {
                     final catalogue = List.generate(widget.catalogues.length,
                         (index) => widget.catalogues[index]).where((element) {
-                      final titleLower = element.name.toLowerCase();
-                      final searchLower = resultQrcode?.toLowerCase();
-                      return titleLower.startsWith(searchLower!) &&
-                          titleLower.endsWith(searchLower);
+                      final titleLower = element.name.trim().toLowerCase();
+                      final searchLower = resultQrcode!.trim().toLowerCase();
+                      return titleLower.startsWith(searchLower);
                     }).toList();
+                    //print(catalogue);
                     if (catalogue.length == 1) {
                       Navigator.of(context).push(MaterialPageRoute(
                           builder: (context) =>
                               Detail(catalogue: catalogue[0])));
                     } else {
-                      AlertDialog(
-                        title: const Text(
-                          'ข้อผิดพลาด',
-                          style: TextStyle(fontSize: 18),
-                        ),
-                        content: catalogue.isEmpty
-                            ? const Text('ไม่พบข้อมูลในรายการ')
-                            : Text('พบข้อมูลรายการจำนวน ${catalogue.length}'),
+                      showDialog(
+                        context: context,
+                        builder: (context) {
+                          return AlertDialog(
+                            backgroundColor: Colors.white,
+                            title: const Text(
+                              'ข้อผิดพลาด',
+                            ),
+                            content: catalogue.isEmpty
+                                ? const Text('ไม่พบข้อมูลในรายการ')
+                                : Text(
+                                    'พบข้อมูลรายการจำนวน ${catalogue.length}'),
+                            actions: [
+                              TextButton(
+                                onPressed: () {
+                                  Navigator.pop(context);
+                                },
+                                child: const Text(
+                                  'OK',
+                                  style: TextStyle(color: Colors.black),
+                                ),
+                              ),
+                            ],
+                          );
+                        },
                       );
                     }
                   },

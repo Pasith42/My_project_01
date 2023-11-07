@@ -48,6 +48,10 @@ dependencies:
   fluttertoast: ^8.2.2
   qr_flutter: ^4.1.0
   scan: ^1.6.0
+  firebase_core: ^2.21.0
+  cloud_firestore: ^4.12.2
+  firebase_storage: ^11.4.1
+  dio: ^5.3.3
 
 dev_dependencies:
   flutter_test:

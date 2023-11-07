@@ -1,5 +1,4 @@
-import 'dart:io';
-
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:uuid/uuid.dart';
 
 const uuid = Uuid();
@@ -18,7 +17,7 @@ class Catalogues {
   final String id;
   //ชือ อุปกรณ์
   final String name;
-  //รหัส อุปกรณ์
+  //****รหัส อุปกรณ์****
   final int number;
   //รหัสห้อง
   final String room;
@@ -27,5 +26,24 @@ class Catalogues {
   //กำหนดวันที่ตรวจสภาพ
   final DateTime checkDate;
   //เก็บภาพที่ถ่ายรูปได้
-  final File image;
+  final String image;
+
+  factory Catalogues.tofromJson(Map<String, dynamic> json) => Catalogues(
+        name: json["name"],
+        number: json["number"],
+        room: json["room"],
+        startDate: (json["startDate"] as Timestamp).toDate(),
+        checkDate: (json["checkDate"] as Timestamp).toDate(),
+        image: json["image"],
+    );
+  Map<String, dynamic> toFirestore() {
+    return {
+      "name": name,
+      "number": number,
+      "room": room,
+      "startDate" : Timestamp.fromDate(startDate),
+      "checkDate" : Timestamp.fromDate(checkDate),
+      "image" : image
+    };
+  }
 }

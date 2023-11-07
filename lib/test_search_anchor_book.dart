@@ -4,7 +4,7 @@ import 'package:flutter_application_1/data/books_data.dart';
 import 'model/books.dart';
 
 void main() => runApp(
-      MyApp(),
+      const MyApp(),
     );
 
 class MyApp extends StatelessWidget {
@@ -102,12 +102,12 @@ class _SearchBarAppState extends State<SearchBarApp> {
                       items.addAll(item);
                     });
                   },
-                  icon: Icon(Icons.search)),
+                  icon: const Icon(Icons.search)),
               IconButton(
                   onPressed: () {
                     searchController.clear();
                   },
-                  icon: Icon(Icons.clear)),
+                  icon: const Icon(Icons.clear)),
             ],
             barTextStyle: MaterialStateProperty.all(
                 const TextStyle(color: Colors.black45)),

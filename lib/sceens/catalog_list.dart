@@ -15,7 +15,7 @@ class CataloguesList extends StatelessWidget {
   Widget build(BuildContext context) {
     if (catalogues.isEmpty) {
       return Center(
-        child: Container(
+        child: SizedBox(
           height: 300,
           child: Text(
             'ไม่มีรายการที่มีอยู่',
@@ -36,7 +36,7 @@ class CataloguesList extends StatelessWidget {
         final item = items.isEmpty ? catalogues[index] : items[index];
 
         return ListTile(
-          leading: Image.file(
+          leading: Image.network(
             item.image,
             fit: BoxFit.fill,
             width: 50,

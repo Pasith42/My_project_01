@@ -1,27 +1,32 @@
 import 'dart:io';
 
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_application_1/model/catalogues.dart';
+//import 'package:flutter_application_1/model/catalogues.dart';
 import 'package:flutter_application_1/sceens/image_input.dart';
 import 'package:intl/intl.dart';
-import 'package:flutter_application_1/providers/user_places.dart';
-import 'package:flutter_riverpod/flutter_riverpod.dart';
+//import 'package:flutter_application_1/providers/user_places.dart';
+//import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 final formatter = DateFormat.yMMMMEEEEd();
 
-class Addcatalog extends ConsumerStatefulWidget {
+class Addcatalog extends StatefulWidget {
   const Addcatalog({super.key});
 
   @override
-  ConsumerState<Addcatalog> createState() => _AddcatalogState();
+  State<Addcatalog> createState() => _AddcatalogState();
 }
 
-class _AddcatalogState extends ConsumerState<Addcatalog> {
+class _AddcatalogState extends State<Addcatalog> {
   final _nameController = TextEditingController();
   final _numberController = TextEditingController();
   final _roomController = TextEditingController();
   DateTime? _selectedstartDate;
   DateTime? _selectedcheckDate;
   File? _selectedImage;
+  final firebasetore = FirebaseFirestore.instance;
 
   void _saveCatalogue() {
     final enterName = _nameController.text;
@@ -56,7 +61,15 @@ class _AddcatalogState extends ConsumerState<Addcatalog> {
       );
       return;
     }
-
+    //ทดสอบ
+    addToFirebase(
+      enterName,
+      enterNumber,
+      enterRoom,
+      enterStartDate,
+      enterChecktDate,
+    );
+    /*
     ref.read(userCtataloguesProvider.notifier).appCatalogue(
         enterName,
         enterNumber,
@@ -64,15 +77,16 @@ class _AddcatalogState extends ConsumerState<Addcatalog> {
         enterStartDate,
         enterChecktDate,
         _selectedImage!);
+    */
 
     Navigator.of(context).pop();
 
     showModalBottomSheet(
       context: context,
       builder: (context) {
-        return Container(
+        return const SizedBox(
             height: 50,
-            child: const Padding(
+            child: Padding(
               padding: EdgeInsets.all(15.0),
               child: Text('เพิ่มรายการเสร็จสมบูรณ์'),
             ));
@@ -108,6 +122,49 @@ class _AddcatalogState extends ConsumerState<Addcatalog> {
     setState(() {
       _selectedcheckDate = pickedDate;
     });
+  }
+
+  //ทดสอบ
+  Future<String> uploadImageToFirebase(String fileName, File image) async {
+    try {
+      Reference reference =
+          FirebaseStorage.instance.ref().child('mypicture/$fileName.png');
+      await reference.putFile(image);
+
+      String downloadURL = await reference.getDownloadURL();
+
+      return downloadURL;
+    } on FirebaseException catch (e) {
+      print(e.toString());
+      rethrow;
+    }
+  }
+
+  Future<void> addToFirebase(
+      String enterName,
+      int enterNumber,
+      String enterRoom,
+      DateTime enterStartDate,
+      DateTime enterChecktDate) async {
+    try {
+      var imagetoFirebase =
+          await uploadImageToFirebase(enterName, _selectedImage!);
+      final keepData = firebasetore.collection('keepData').doc('อุตสาหการ');
+      keepData
+          .collection(enterRoom)
+          .doc('$enterNumber')
+          .set(Catalogues(
+            name: enterName,
+            number: enterNumber,
+            room: enterRoom,
+            startDate: enterStartDate,
+            checkDate: enterChecktDate,
+            image: imagetoFirebase,
+          ).toFirestore())
+          .onError((error, _) => print("Error writing document: $error"));
+    } catch (err) {
+      print('Caught error: $err');
+    }
   }
 
 //ตรวจสอบใช้งานหรือไม่ครับ

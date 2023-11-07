@@ -1,12 +1,14 @@
 import 'package:flutter/material.dart';
 
-void main() => runApp(MyApp());
+void main() => runApp(const MyApp());
 
 class MyApp extends StatelessWidget {
+  const MyApp({super.key});
+
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-      home: const SearchBarApp(),
+    return const MaterialApp(
+      home: SearchBarApp(),
     );
   }
 }
@@ -18,10 +20,10 @@ class SearchBarApp extends StatefulWidget {
 
   @override
   State<SearchBarApp> createState() => //_SearchBarAppState();
-      _SearchAnchorBarExampleState();
+      SearchBarAppState();
 }
 
-class _SearchBarAppState extends State<SearchBarApp> {
+class SearchBarAppState extends State<SearchBarApp> {
   final SearchController controller = SearchController();
   final leading = const Icon(Icons.search);
   final trailing = [
